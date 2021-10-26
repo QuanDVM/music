@@ -1,6 +1,5 @@
 <template>
   <div>
-    s
     <app-header />
 
     <!-- Introduction -->
