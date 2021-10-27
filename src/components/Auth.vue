@@ -25,7 +25,7 @@
             </div>
           </div>
 
-          <!-- Tabs -->
+          <!-- Tabs  -->
           <ul class="flex flex-wrap mb-4">
             <li class="flex-auto text-center">
               <a class="block rounded py-3 px-4 transition"
