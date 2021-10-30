@@ -74,9 +74,10 @@ export default {
         task.on('state_changed', (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           this.uploads[uploadIndex].current_progress = progress;
+        }, (error) => {
+          console.log(error);
         });
       });
-
       console.log(files);
     },
     runOver() {
