@@ -52,9 +52,13 @@ export default {
   },
   methods: {
     upload($event) {
-      console.log($event);
       this.is_dragover = false;
-      const files = [...$event.dataTransfer.files];
+
+      // $event.dataTransfer.files is get file from drag and drop
+      // $event.target.files is get file from uploads file
+      const files = $event.dataTransfer
+        ? [...$event.dataTransfer.files]
+        : [...$event.target.files];
 
       files.forEach((file) => {
         if (file.type !== 'audio/mpeg') {
@@ -93,14 +97,16 @@ export default {
 
           song.url = await task.snapshot.ref.getDownloadURL();
 
-          await songsCollection.add(song);
+          const songRef = await songsCollection.add(song);
+          const songSnapshot = await songRef.get();
+
+          this.$emit('addSong', songSnapshot);
 
           this.uploads[uploadIndex].variant = 'bg-green-400';
           this.uploads[uploadIndex].icon = 'fas fa-check';
           this.uploads[uploadIndex].text_class = 'text-green-400';
         });
       });
-      console.log(files);
     },
     runOver() {
       console.log('run over');
@@ -118,6 +124,11 @@ export default {
     },
     rundragNormal() {
       console.log('rundragNormal');
+    },
+    cancelUploads() {
+      this.uploads.forEach((upload) => {
+        upload.task.cancel();
+      });
     },
   },
 };
