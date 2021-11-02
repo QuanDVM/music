@@ -74,7 +74,6 @@ export default {
     },
   },
   beforeRouteLeave(to, from, next) {
-    console.log(this.$refs.upload);
     // cancel call api Uploads when uploading but user change router
     this.$refs.upload.cancelUploads();
 

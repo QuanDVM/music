@@ -21,7 +21,7 @@
     </section>
 
     <!-- Main Content -->
-    <section class="container mx-auto mt-6">
+    <section class="container mx-auto mt-6" id="#comments">
       <div class="bg-white rounded border border-gray-200 relative flex flex-col">
         <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
           <span class="card-title">Comments ({{ comments.length }})</span>
@@ -61,6 +61,8 @@
         </div>
       </div>
     </section>
+
+    <!-- Comments -->
     <ul class="container mx-auto">
       <li
         class="p-6 bg-gray-50 border border-gray-200"
@@ -72,7 +74,7 @@
           <div class="font-bold">{{ comment.name }}</div>
           <time>{{ comment.datePosted }}</time>
         </div>
-
+          <!-- <time-ago /> -->
         <p>{{ comment.content }}</p>
       </li>
     </ul>
@@ -82,9 +84,13 @@
 <script>
 import { songsCollection, commentsCollection, auth } from '@/includes/firebase';
 import { mapState, mapActions } from 'vuex';
+// import { TimeAgo } from 'vue2-timeago';
 
 export default {
   name: 'Song',
+  // components: {
+  //   TimeAgo,
+  // },
   data() {
     return {
       song: {},
@@ -97,6 +103,7 @@ export default {
       comment_alert_message: 'Please wait! Your comment is being submitted',
       comments: [],
       sort: 'asc',
+      // a: Date.parse('01 Jan 1970 00:00:00 GMT'),
     };
   },
   computed: {
