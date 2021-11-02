@@ -7,7 +7,7 @@
         class="text-white font-bold uppercase text-2xl mr-4"
         :to="{ name: 'home' }"
         exact-active-class="no-active"
-      >Music</router-link>
+      >(DVM)Music</router-link>
 
       <div class="flex flex-grow items-center">
         <!-- Primary Navigation -->

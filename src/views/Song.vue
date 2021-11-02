@@ -5,13 +5,17 @@
         style="background-image: url(/assets/img/song-header.png)">
       </div>
       <div class="container mx-auto flex items-center">
-        <button type="button" class="z-50 h-24 w-24 text-3xl bg-white text-black rounded-full
-          focus:outline-none">
+        <button
+          type="button"
+          class="z-50 h-24 w-24 text-3xl bg-white text-black rounded-full
+          focus:outline-none"
+          @click.prevent="setCurrentSong(song)"
+        >
           <i class="fas fa-play"></i>
         </button>
         <div class="z-50 text-left ml-8">
-          <div class="text-3xl font-bold">Song Title</div>
-          <div>Blues Rock</div>
+          <div class="text-3xl font-bold">{{ song.modified_name }}</div>
+          <div>{{ song.genne }}</div>
         </div>
       </div>
     </section>
@@ -20,143 +24,167 @@
     <section class="container mx-auto mt-6">
       <div class="bg-white rounded border border-gray-200 relative flex flex-col">
         <div class="px-6 pt-6 pb-5 font-bold border-b border-gray-200">
-          <span class="card-title">Comments (15)</span>
+          <span class="card-title">Comments ({{ comments.length }})</span>
           <i class="fa fa-comments float-right text-green-400 text-2xl"></i>
         </div>
         <div class="p-6">
-          <form>
-            <textarea
+          <div
+            class="text-white text-center font-bold p-4 mb-4"
+            :class="comment_alert_variant"
+            v-if="comment_show_alert"
+          >{{ comment_alert_message }}</div>
+          <vee-form
+            :validation-schema="schemaComment"
+            @submit="addComment"
+            v-if="userLoggedIn"
+          >
+            <vee-field
+              as="textarea"
+              name="comment"
               class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition
                 duration-500 focus:outline-none focus:border-black rounded mb-4"
-              placeholder="Your comment here..."></textarea>
+              placeholder="Your comment here..."></vee-field>
+            <ErrorMessage class="text-red-600 block" name="comment" />
             <button
               type="submit"
               class="py-1.5 px-3 rounded text-white bg-green-600"
+              :disabled="comment_in_submission"
             >Submit</button>
-          </form>
+          </vee-form>
           <select
+            v-model="sort"
             class="block mt-4 py-1.5 px-3 text-gray-800 border border-gray-300 transition
             duration-500 focus:outline-none focus:border-black rounded">
-            <option value="1">Latest</option>
-            <option value="2">Oldest</option>
+            <option value="asc">Latest</option>
+            <option value="desc">Oldest</option>
           </select>
         </div>
       </div>
     </section>
     <ul class="container mx-auto">
-      <li class="p-6 bg-gray-50 border border-gray-200">
+      <li
+        class="p-6 bg-gray-50 border border-gray-200"
+        v-for="comment in sortedComments"
+        :key="comment.docID"
+      >
         <!-- Comment Author -->
         <div class="mb-5">
-          <div class="font-bold">Elaine Dreyfuss</div>
-          <time>5 mins ago</time>
+          <div class="font-bold">{{ comment.name }}</div>
+          <time>{{ comment.datePosted }}</time>
         </div>
 
-        <p>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium der doloremque laudantium.
-        </p>
-      </li>
-      <li class="p-6 bg-gray-50 border border-gray-200">
-        <!-- Comment Author -->
-        <div class="mb-5">
-          <div class="font-bold">Elaine Dreyfuss</div>
-          <time>5 mins ago</time>
-        </div>
-
-        <p>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium der doloremque laudantium.
-        </p>
-      </li>
-      <li class="p-6 bg-gray-50 border border-gray-200">
-        <!-- Comment Author -->
-        <div class="mb-5">
-          <div class="font-bold">Elaine Dreyfuss</div>
-          <time>5 mins ago</time>
-        </div>
-
-        <p>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium der doloremque laudantium.
-        </p>
-      </li>
-      <li class="p-6 bg-gray-50 border border-gray-200">
-        <!-- Comment Author -->
-        <div class="mb-5">
-          <div class="font-bold">Elaine Dreyfuss</div>
-          <time>5 mins ago</time>
-        </div>
-
-        <p>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium der doloremque laudantium.
-        </p>
-      </li>
-      <li class="p-6 bg-gray-50 border border-gray-200">
-        <!-- Comment Author -->
-        <div class="mb-5">
-          <div class="font-bold">Elaine Dreyfuss</div>
-          <time>5 mins ago</time>
-        </div>
-
-        <p>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium der doloremque laudantium.
-        </p>
-      </li>
-      <li class="p-6 bg-gray-50 border border-gray-200">
-        <!-- Comment Author -->
-        <div class="mb-5">
-          <div class="font-bold">Elaine Dreyfuss</div>
-          <time>5 mins ago</time>
-        </div>
-
-        <p>
-          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-          accusantium der doloremque laudantium.
-        </p>
+        <p>{{ comment.content }}</p>
       </li>
     </ul>
-
-    <!-- Player -->
-    <div class="fixed bottom-0 left-0 bg-white p-5 pb-4 text-left align-top w-full h-16">
-      <div class="relative">
-        <!-- Play/Pause Button -->
-        <div class="float-left w-7 h-7 leading-3">
-          <button type="button">
-            <i class="fa fa-play text-gray-500 text-xl"></i>
-          </button>
-        </div>
-        <!-- Current Position -->
-        <div class="float-left w-7 h-7 leading-3 text-gray-400 mt-0 text-lg w-14 ml-5 mt-1">
-          <span class="player-currenttime">00:00</span>
-        </div>
-        <!-- Scrub -->
-        <div class="float-left w-7 h-7 leading-3 ml-7 mt-2 player-scrub">
-          <div class="absolute left-0 right-0 text-lg text-center mx-auto player-song-info">
-            <span class="song-title">Song Title</span> by
-            <span class="song-artist">Artist</span>
-          </div>
-          <span class="block w-full h-2 rounded m-1 mt-2 bg-gray-200 relative cursor-pointer">
-            <span class="absolute top-neg-8 text-gray-800 text-lg" style="left: 50%;">
-              <i class="fas fa-circle"></i>
-            </span>
-            <span class="block h-2 rounded bg-gradient-to-r from-green-500 to-green-400"
-              style="width: 50%;"></span>
-          </span>
-        </div>
-        <!-- Duration -->
-        <div class="float-left w-7 h-7 leading-3 text-gray-400 mt-0 text-lg w-14 ml-8 mt-1">
-          <span class="player-duration">03:06</span>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
+import { songsCollection, commentsCollection, auth } from '@/includes/firebase';
+import { mapState, mapActions } from 'vuex';
+
 export default {
   name: 'Song',
+  data() {
+    return {
+      song: {},
+      schemaComment: {
+        comment: 'required|min:3',
+      },
+      comment_in_submission: false,
+      comment_show_alert: false,
+      comment_alert_variant: 'bg-blue-500',
+      comment_alert_message: 'Please wait! Your comment is being submitted',
+      comments: [],
+      sort: 'asc',
+    };
+  },
+  computed: {
+    ...mapState(['userLoggedIn']),
+    sortedComments() {
+      return this.comments.slice().sort((a, b) => {
+        if (this.sort === 'asc') {
+          return new Date(b.datePosted) - new Date(a.datePosted);
+        }
+
+        return new Date(a.datePosted) - new Date(b.datePosted);
+      });
+    },
+  },
+  async created() {
+    // get data song
+    const docSnapshot = await songsCollection.doc(this.$route.params.id).get();
+
+    if (!docSnapshot.exists) {
+      this.$router.push({ name: 'home' });
+      return;
+    }
+
+    // get status sort comment
+    const { sort } = this.$route.query;
+
+    this.sort = sort === 'asc' || sort === 'desc' ? sort : 'asc';
+    this.song = docSnapshot.data();
+
+    // get data comments
+    this.getComments();
+  },
+  methods: {
+    ...mapActions(['setCurrentSong']),
+    async addComment(values, { resetForm }) {
+      this.comment_in_submission = true;
+      this.comment_show_alert = true;
+      this.comment_alert_variant = 'bg-blue-500';
+      this.comment_alert_message = 'Please wait! You comment is being submitted';
+
+      const comment = {
+        content: values.comment,
+        datePosted: new Date().toString(),
+        sid: this.$route.params.id,
+        name: auth.currentUser.displayName,
+        uid: auth.currentUser.uid,
+      };
+
+      await commentsCollection.add(comment);
+
+      this.song.comment_count += 1;
+      await songsCollection.doc().update({
+        comnent_count: this.song.comment_count,
+      });
+
+      this.comments.unshift(comment);
+
+      this.comment_in_submission = true;
+      this.comment_alert_variant = 'bg-green-500';
+      this.comment_alert_message = 'Comment added!';
+
+      resetForm();
+    },
+    async getComments() {
+      const snapshots = await commentsCollection
+        .where('sid', '==', this.$route.params.id)
+        .get();
+
+      snapshots.forEach((doc) => {
+        this.comments.unshift({
+          docID: doc.id,
+          ...doc.data(),
+        });
+      });
+    },
+  },
+  watch: {
+    sort(newVal) {
+      if (newVal === this.$route.query.sort) return;
+
+      this.$router.push({
+        query: {
+          sort: newVal,
+
+        },
+      });
+    },
+  },
 };
 </script>
 
