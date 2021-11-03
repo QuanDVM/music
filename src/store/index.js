@@ -34,6 +34,7 @@ export default createStore({
       state.sound = new Howl({
         src: [payload.url],
         html5: true,
+        loop: true,
       });
     },
     updatePosition: (state) => {

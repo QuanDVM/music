@@ -4,9 +4,9 @@
     <div class="relative">
       <!-- Play/Pause Button -->
       <div class="float-left w-7 h-7 leading-3">
-        <button type="button" @click.prevent="toggleAudio">
+        <button type="button" class="outline-none appearance-none" @click.prevent="toggleAudio">
           <i
-            class="fa text-gray-500 text-xl focus:border-none"
+            class="fa text-gray-500 text-xl"
             :class="{ 'fa-play': !playing, 'fa-pause': playing }"
           ></i>
         </button>
@@ -62,6 +62,8 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+.outline-none {
+  outline: unset;
+}
 </style>

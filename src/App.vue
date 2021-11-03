@@ -1,12 +1,11 @@
 <template>
   <div>
     <app-header />
-
-    <router-view v-slot="{ Component }">
-      <transition name="fade" mode="out-in">
-        <component :is="Component"></component>
-      </transition>
-    </router-view>
+      <router-view v-slot="{ Component, route }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" :key="route.path"></component>
+        </transition>
+      </router-view>
     <auth-player />
     <auth-modal />
   </div>
@@ -31,7 +30,7 @@ export default {
 </script>
 
 <style scoped>
-.fade-enter-from {
+.fade-enter {
   opacity: 0;
 }
 .fade-enter-active {
