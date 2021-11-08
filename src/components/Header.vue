@@ -46,7 +46,7 @@ export default {
     }),
   },
   methods: {
-    ...mapMutations(['toggleAuthModal']),
+    ...mapMutations('auth', ['toggleAuthModal']),
     ...mapActions(['signout']),
     signOut() {
       this.signout();

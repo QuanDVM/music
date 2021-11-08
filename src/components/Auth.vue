@@ -79,7 +79,7 @@ export default {
     }),
   },
   methods: {
-    ...mapMutations(['toggleAuthModal']),
+    ...mapMutations('auth', ['toggleAuthModal']),
   },
 };
 </script>

@@ -15,6 +15,7 @@
 import AppHeader from '@/components/Header.vue';
 import AuthModal from '@/components/Auth.vue';
 import AuthPlayer from '@/components/Player.vue';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'App',
@@ -24,7 +25,10 @@ export default {
     AuthPlayer,
   },
   created() {
-    this.$store.dispatch('init_login');
+    this.init_login();
+  },
+  methods: {
+    ...mapActions(['init_login']),
   },
 };
 </script>
